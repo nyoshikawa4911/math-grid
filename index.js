@@ -61,7 +61,10 @@ const main = async () => {
     }
     const digitsAnswer = await enquirer.prompt(digitQuestions);
 
-    const mathGrid = new MathGrid(menuAnswer.id, digitsAnswer.id);
+    const gridWidth = menuAnswer.id === MENU_ID_GRID_5X5 ? 5 : 10;
+    const maxDigits = digitsAnswer.id === DIGIT_ID_1 ? 1 : 2;
+
+    const mathGrid = new MathGrid(gridWidth, maxDigits);
     await mathGrid.start();
   }
 };

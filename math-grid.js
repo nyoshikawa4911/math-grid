@@ -1,12 +1,12 @@
 import KeyInput from "./key-input.js";
 
 export default class MathGrid {
-  #mode;
+  #gridWidth;
   #maxDigits;
   #keyInput;
 
-  constructor(mode, maxDigits) {
-    this.#mode = mode;
+  constructor(gridWidth, maxDigits) {
+    this.#gridWidth = gridWidth;
     this.#maxDigits = maxDigits;
     this.#keyInput = new KeyInput();
   }
