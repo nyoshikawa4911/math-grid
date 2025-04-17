@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import enquirer from "enquirer";
+import MathGrid from "./math-grid.js";
 
 const MENU_ID_GRID_5X5 = 1;
 const MENU_ID_GRID_10X10 = 2;
@@ -50,12 +51,19 @@ const digitQuestions = [
   },
 ];
 
-console.clear();
-console.log("---------- Welcome to Math Grid ----------\n");
+const main = async () => {
+  while (true) {
+    console.clear();
+    console.log("---------- Welcome to Math Grid ----------\n");
+    const menuAnswer = await enquirer.prompt(menuQuestions);
+    if (menuAnswer.id === MENU_ID_QUIT) {
+      process.exit(0);
+    }
+    const digitsAnswer = await enquirer.prompt(digitQuestions);
 
-const menuAnswer = await enquirer.prompt(menuQuestions);
-if (menuAnswer.id === MENU_ID_QUIT) {
-  process.exit(0);
-}
+    const mathGrid = new MathGrid(menuAnswer.id, digitsAnswer.id);
+    await mathGrid.start();
+  }
+};
 
-const digitAnswer = await enquirer.prompt(digitQuestions);
+main();
