@@ -17,6 +17,6 @@ export default class GridModel {
   }
 
   #randomInt() {
-    return Math.floor(Math.random() * (this.#maxDigits === 1 ? 10 : 100));
+    return Math.floor(Math.random() * (this.#maxDigits === 1 ? 9 : 99)) + 1;
   }
 }
