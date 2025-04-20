@@ -11,9 +11,37 @@ export default class GridModel {
   }
 
   setup() {
-    this.#grid = new Array(this.#gridWidth).fill().map(() => new Array(this.#gridWidth).fill(null));
-    this.#targetRows = new Array(this.#gridWidth).fill().map(() => this.#randomInt());
-    this.#targetCols = new Array(this.#gridWidth).fill().map(() => this.#randomInt());
+    this.#grid = new Array(this.#gridWidth + 1)
+      .fill()
+      .map(() => new Array(this.#gridWidth + 1).fill(null));
+    const rowNumbers = new Array(this.#gridWidth).fill().map(() => this.#randomInt());
+    const colNumbers = new Array(this.#gridWidth).fill().map(() => this.#randomInt());
+
+    this.#grid[0][0] = "+";
+    for (let index = 1; index <= this.gridWidth; index++) {
+      this.#grid[0][index] = rowNumbers[index - 1];
+      this.#grid[index][0] = colNumbers[index - 1];
+    }
+  }
+
+  get gridWidth() {
+    return this.#gridWidth;
+  }
+
+  get maxDigits() {
+    return this.#maxDigits;
+  }
+
+  get grid() {
+    return this.#grid;
+  }
+
+  get targetRows() {
+    return this.#targetRows;
+  }
+
+  get targetCols() {
+    return this.#targetCols;
   }
 
   #randomInt() {

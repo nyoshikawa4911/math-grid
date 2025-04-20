@@ -1,5 +1,6 @@
 import GridModel from "./grid-model.js";
 import KeyInput from "./key-input.js";
+import Formatter from "./formatter.js";
 
 export default class MathGrid {
   #gridWidth;
@@ -16,6 +17,7 @@ export default class MathGrid {
 
   async start() {
     this.#gridModel.setup();
+    console.log(Formatter.format(this.#gridModel));
     await this.#keyInput.waitKeyInput();
   }
 }
