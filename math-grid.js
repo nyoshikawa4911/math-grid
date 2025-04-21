@@ -12,12 +12,18 @@ export default class MathGrid {
     this.#gridWidth = gridWidth;
     this.#maxDigits = maxDigits;
     this.#gridModel = new GridModel(gridWidth, maxDigits);
-    this.#keyInput = new KeyInput();
+    this.#keyInput = new KeyInput(maxDigits);
+    this.#keyInput.addObserver(this);
   }
 
   async start() {
     this.#gridModel.setup();
     console.log(Formatter.format(this.#gridModel));
+    // TODO : カーソル位置の初期設定
     await this.#keyInput.waitKeyInput();
+  }
+
+  update(eventData) {
+    // TODO
   }
 }
