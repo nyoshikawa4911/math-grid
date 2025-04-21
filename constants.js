@@ -8,3 +8,21 @@ export const DIGIT_ID = {
   ONE: 1,
   TWO: 2,
 };
+
+export const KEY_CODE = {
+  ETX: 0x03,
+  EOT: 0x04,
+  BS: 0x08,
+  CR: 0x0d,
+  ZERO: 0x30,
+  NINE: 0x39,
+  DEL: 0x7f,
+};
+
+export const ANSI_ESC = "\x1b[";
+export const ANSI = {
+  UP: `${ANSI_ESC}A`,
+  DOWN: `${ANSI_ESC}B`,
+  RIGHT: `${ANSI_ESC}C`,
+  LEFT: `${ANSI_ESC}D`,
+};
