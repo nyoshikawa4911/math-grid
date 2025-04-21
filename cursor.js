@@ -87,6 +87,14 @@ export default class Cursor {
     }
   }
 
+  moveCellHead() {
+    if (this.#maxDigits === 1) {
+      process.stdout.write(`${ANSI_ESC}1D`);
+    } else {
+      process.stdout.write(`${ANSI_ESC}2D`);
+    }
+  }
+
   #moveCursor(absX, absY) {
     process.stdout.write(`${ANSI_ESC}${absY};${absX}H`);
   }

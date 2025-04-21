@@ -31,8 +31,8 @@ export default class MathGrid {
   update(eventData) {
     if (eventData.value !== null) {
       this.#gridModel.update(...this.#cursor.position(), eventData.value);
-      console.clear();
-      console.log(Formatter.format(this.#gridModel));
+      this.#cursor.moveCellHead();
+      process.stdout.write(Formatter.formatCell(this.#gridModel, ...this.#cursor.position()));
       this.#cursor.moveCurrent();
     }
 

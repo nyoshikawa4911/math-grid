@@ -1,5 +1,6 @@
 const SEPARATOR_OF_1CELL_FOR_1DIGITS = "-----";
 const SEPARATOR_OF_1CELL_FOR_2DIGITS = "------";
+
 export default class Formatter {
   static format(gridModel) {
     const rowSeparator = this.#rowSeparator(gridModel);
@@ -20,6 +21,11 @@ export default class Formatter {
       content.push(rowSeparator);
     }
     return content.join("\n");
+  }
+
+  static formatCell(gridModel, rowIndex, colIndex) {
+    const numString = gridModel.grid[rowIndex + 1][colIndex + 1].toString();
+    return numString.padStart(gridModel.maxDigits + 1, " ");
   }
 
   static #rowSeparator(gridModel) {
