@@ -43,7 +43,7 @@ export default class KeyInput {
 
         if (keyCode === KEY_CODE.BS || keyCode === KEY_CODE.DEL) {
           if (this.#removeFromBuffer()) {
-            this.#notify({ value: this.#buffer === "" ? 0 : parseInt(this.#buffer) });
+            this.#notify({ value: this.#buffer === "" ? NaN : parseInt(this.#buffer) });
           }
           return;
         }

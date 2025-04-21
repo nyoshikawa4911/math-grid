@@ -24,7 +24,8 @@ export default class Formatter {
   }
 
   static formatCell(gridModel, rowIndex, colIndex) {
-    const numString = gridModel.grid[rowIndex + 1][colIndex + 1].toString();
+    const value = gridModel.grid[rowIndex + 1][colIndex + 1];
+    const numString = value === null ? "" : value.toString();
     return numString.padStart(gridModel.maxDigits + 1, " ");
   }
 
