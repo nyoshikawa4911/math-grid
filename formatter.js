@@ -2,7 +2,6 @@ const SEPARATOR_OF_1CELL_FOR_1DIGITS = "-----";
 const SEPARATOR_OF_1CELL_FOR_2DIGITS = "------";
 export default class Formatter {
   static format(gridModel) {
-    console.clear();
     const rowSeparator = this.#rowSeparator(gridModel);
     const colSeparator = "|";
 

@@ -15,16 +15,8 @@ export default class KeyInput {
     this.#observers.push(observer);
   }
 
-  #notify(rawData) {
-    const eventData = {
-      keyCode: rawData.keyCode ?? null,
-      ansi: rawData.ansi ?? null,
-      value: rawData.value ?? null,
-    };
-
-    for (const observer of this.#observers) {
-      observer.update(eventData);
-    }
+  setBuffer(numStr) {
+    this.#buffer = numStr;
   }
 
   async waitKeyInput() {
@@ -41,29 +33,45 @@ export default class KeyInput {
         }
 
         if (KEY_CODE.ZERO <= keyCode && keyCode <= KEY_CODE.NINE) {
-          this.#appendToBuffer(key);
-          this.#notify({ value: this.#buffer });
+          if (this.#buffer === "" && keyCode === KEY_CODE.ZERO) return;
+
+          if (this.#appendToBuffer(key)) {
+            this.#notify({ value: parseInt(this.#buffer) });
+          }
           return;
         }
 
         if (keyCode === KEY_CODE.BS || keyCode === KEY_CODE.DEL) {
-          this.#removeFromBuffer();
-          this.#notify({ keyCode: keyCode });
+          if (this.#removeFromBuffer()) {
+            this.#notify({ value: this.#buffer === "" ? 0 : parseInt(this.#buffer) });
+          }
           return;
         }
 
         if (keyCode === KEY_CODE.CR) {
-          this.#notify({ keyCode: keyCode });
           this.#clearBuffer();
+          this.#notify({ keyCode: keyCode });
           return;
         }
 
         if (this.#isArrowKey(key)) {
-          this.#notify({ ansi: key });
           this.#clearBuffer();
+          this.#notify({ ansi: key });
         }
       });
     });
+  }
+
+  #notify(rawData) {
+    const eventData = {
+      keyCode: rawData.keyCode ?? null,
+      ansi: rawData.ansi ?? null,
+      value: rawData.value ?? null,
+    };
+
+    for (const observer of this.#observers) {
+      observer.update(eventData);
+    }
   }
 
   #startRawInput() {
@@ -91,13 +99,17 @@ export default class KeyInput {
   }
 
   #appendToBuffer(key) {
-    if (this.#buffer.length < this.#maxDigits) {
-      this.#buffer += key;
-    }
+    if (this.#buffer.length > this.#maxDigits) return false;
+
+    this.#buffer += key;
+    return true;
   }
 
   #removeFromBuffer() {
+    if (this.#buffer === "") return false;
+
     this.#buffer = this.#buffer.slice(0, -1);
+    return true;
   }
 
   #clearBuffer() {
