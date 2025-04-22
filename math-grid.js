@@ -27,9 +27,7 @@ export default class MathGrid {
   update(eventData) {
     if (eventData.value !== null) {
       this.#gridModel.update(...this.#cursor.position(), eventData.value);
-      this.#cursor.moveCellHead();
-      process.stdout.write(Formatter.formatCell(this.#gridModel, ...this.#cursor.position()));
-      this.#cursor.moveCurrent();
+      this.#cellUpdate();
     }
 
     if (eventData.keyCode) {
@@ -68,6 +66,12 @@ export default class MathGrid {
       }
       this.#syncBuffer();
     }
+  }
+
+  #cellUpdate() {
+    this.#cursor.moveCellHead();
+    process.stdout.write(Formatter.formatCell(this.#gridModel, ...this.#cursor.position()));
+    this.#cursor.moveCurrent();
   }
 
   #syncBuffer() {
