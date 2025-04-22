@@ -22,7 +22,7 @@ export default class Formatter {
       content.push(rowContent.join(" "));
       content.push(rowSeparator);
     }
-    return [this.#formatHeader(gridModel), ...content].join("\n");
+    return [this.#formatHeader(gridModel), ...content, "", this.#formatHelpMessage()].join("\n");
   }
 
   static formatCell(gridModel, rowIndex, colIndex) {
@@ -43,6 +43,18 @@ export default class Formatter {
   static #formatHeader(gridModel) {
     const headerMessage = `----- Math Grid (${gridModel.gridWidth}x${gridModel.gridWidth}) - ${gridModel.maxDigits}-Digit Numbers -----\n`;
     return ANSI_BASIC_COLOR.FORE_CYAN + headerMessage + ANSI_BASIC_COLOR.RESET;
+  }
+
+  static #formatHelpMessage() {
+    return (
+      "The following keys are available.\n" +
+      "  0-9   : Input numerical values.\n" +
+      " Enter  : Move the cursor to the next cell.\n" +
+      " Arrows : Move the cursor in the specified direction.\n" +
+      " BS/DEL : Erase one digit of the inputted number.\n" +
+      " Ctrl+D : Scoring.\n" +
+      " Ctrl+C : Quit the game."
+    );
   }
 
   static #formatResultGrid(gridModel) {

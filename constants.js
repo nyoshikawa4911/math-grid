@@ -1,5 +1,5 @@
 export const REQUIRED_TERMINAL_SIZE = {
-  HEIGHT: 30,
+  HEIGHT: 34,
   WIDTH: 67,
 };
 
