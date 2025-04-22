@@ -1,3 +1,8 @@
+export const REQUIRED_TERMINAL_SIZE = {
+  HEIGHT: 30,
+  WIDTH: 67,
+};
+
 export const MENU_ID = {
   GRID_5X5: 1,
   GRID_10X10: 2,

@@ -2,7 +2,29 @@
 
 import enquirer from "enquirer";
 import MathGrid from "./math-grid.js";
-import { MENU_ID, DIGIT_ID } from "./constants.js";
+import { REQUIRED_TERMINAL_SIZE, MENU_ID, DIGIT_ID } from "./constants.js";
+
+const checkTerminalSize = () => {
+  const terminalHeight = process.stdout.rows;
+  const terminalWidth = process.stdout.columns;
+  if (
+    terminalHeight < REQUIRED_TERMINAL_SIZE.HEIGHT ||
+    terminalWidth < REQUIRED_TERMINAL_SIZE.WIDTH
+  ) {
+    console.log(warningMessage(terminalHeight, terminalWidth));
+    return false;
+  }
+  return true;
+};
+
+const warningMessage = (terminalHeight, terminalWidth) => {
+  return (
+    "The terminal's width and height are insufficient. \n" +
+    "Please enlarge the terminal and run again.\n" +
+    `The required width and height are ${REQUIRED_TERMINAL_SIZE.WIDTH} and ${REQUIRED_TERMINAL_SIZE.HEIGHT}, respectively.\n` +
+    `(Current width:${terminalWidth}, Current height:${terminalHeight})`
+  );
+};
 
 const menuQuestions = [
   {
@@ -47,6 +69,8 @@ const digitQuestions = [
 
 const main = async () => {
   while (true) {
+    if (!checkTerminalSize()) return;
+
     console.clear();
     console.log("---------- Welcome to Math Grid ----------\n");
     const menuAnswer = await enquirer.prompt(menuQuestions);
