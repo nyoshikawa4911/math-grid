@@ -26,3 +26,9 @@ export const ANSI = {
   RIGHT: `${ANSI_ESC}C`,
   LEFT: `${ANSI_ESC}D`,
 };
+
+export const ANSI_BASIC_COLOR = {
+  FORE_CYAN: `${ANSI_ESC}36m`,
+  BACK_RED: `${ANSI_ESC}41m`,
+  RESET: `${ANSI_ESC}0m`,
+};

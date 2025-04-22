@@ -4,6 +4,7 @@ export default class GridModel {
   #grid;
   #targetRows;
   #targetCols;
+  #mistakes;
 
   constructor(gridWidth, maxDigits) {
     this.#gridWidth = gridWidth;
@@ -50,6 +51,28 @@ export default class GridModel {
 
   get targetCols() {
     return this.#targetCols;
+  }
+
+  get mistakes() {
+    return this.#mistakes;
+  }
+
+  checkAnswers() {
+    this.#mistakes = [];
+
+    for (let rowIndex = 1; rowIndex <= this.gridWidth; rowIndex++) {
+      for (let colIndex = 1; colIndex <= this.gridWidth; colIndex++) {
+        const answer = this.grid[0][colIndex] + this.grid[rowIndex][0];
+        const userAnswer = this.grid[rowIndex][colIndex];
+
+        if (answer !== userAnswer) {
+          this.#mistakes.push({
+            rowIndex: rowIndex,
+            colIndex: colIndex,
+          });
+        }
+      }
+    }
   }
 
   #randomInt() {

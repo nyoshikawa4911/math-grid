@@ -21,11 +21,24 @@ export default class KeyInput {
 
   async waitKeyInput() {
     return new Promise((resolve) => {
+      let waitingForAnyKey = false;
       this.#startRawInput();
       process.stdin.on("data", (key) => {
         const keyCode = key.charCodeAt(0);
 
-        if (keyCode === KEY_CODE.ETX || keyCode === KEY_CODE.EOT) {
+        if (waitingForAnyKey) {
+          this.#stopRawInput();
+          resolve();
+          return;
+        }
+
+        if (keyCode === KEY_CODE.EOT) {
+          this.#notify({ keyCode: keyCode });
+          waitingForAnyKey = true;
+          return;
+        }
+
+        if (keyCode === KEY_CODE.ETX) {
           this.#stopRawInput();
           this.#notify({ keyCode: keyCode });
           resolve();

@@ -42,7 +42,9 @@ export default class MathGrid {
           // todo : 終了
           break;
         case KEY_CODE.EOT:
-          // todo : 答え合わせ
+          this.#gridModel.checkAnswers();
+          console.clear();
+          console.log(Formatter.formatResultGrid(this.#gridModel));
           break;
         case KEY_CODE.CR:
           this.#cursor.moveNext();
