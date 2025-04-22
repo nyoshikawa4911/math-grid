@@ -2,8 +2,6 @@ export default class GridModel {
   #gridWidth;
   #maxDigits;
   #grid;
-  #targetRows;
-  #targetCols;
   #mistakes;
   #perfectScore;
   #score;
@@ -45,14 +43,6 @@ export default class GridModel {
 
   get grid() {
     return this.#grid;
-  }
-
-  get targetRows() {
-    return this.#targetRows;
-  }
-
-  get targetCols() {
-    return this.#targetCols;
   }
 
   get mistakes() {

@@ -5,15 +5,11 @@ import Cursor from "./cursor.js";
 import { KEY_CODE, ANSI } from "./constants.js";
 
 export default class MathGrid {
-  #gridWidth;
-  #maxDigits;
   #gridModel;
   #keyInput;
   #cursor;
 
   constructor(gridWidth, maxDigits) {
-    this.#gridWidth = gridWidth;
-    this.#maxDigits = maxDigits;
     this.#gridModel = new GridModel(gridWidth, maxDigits);
     this.#keyInput = new KeyInput(maxDigits);
     this.#keyInput.addObserver(this);
