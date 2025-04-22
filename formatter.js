@@ -22,7 +22,7 @@ export default class Formatter {
       content.push(rowContent.join(" "));
       content.push(rowSeparator);
     }
-    return content.join("\n");
+    return [this.#formatHeader(gridModel), ...content].join("\n");
   }
 
   static formatCell(gridModel, rowIndex, colIndex) {
@@ -32,7 +32,17 @@ export default class Formatter {
   }
 
   static formatResult(gridModel) {
-    return [this.#formatResultGrid(gridModel), "", this.#formatResultMessage(gridModel)].join("\n");
+    return [
+      this.#formatHeader(gridModel),
+      this.#formatResultGrid(gridModel),
+      "",
+      this.#formatResultMessage(gridModel),
+    ].join("\n");
+  }
+
+  static #formatHeader(gridModel) {
+    const headerMessage = `----- Math Grid (${gridModel.gridWidth}x${gridModel.gridWidth}) - ${gridModel.maxDigits}-Digit Numbers -----\n`;
+    return ANSI_BASIC_COLOR.FORE_CYAN + headerMessage + ANSI_BASIC_COLOR.RESET;
   }
 
   static #formatResultGrid(gridModel) {

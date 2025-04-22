@@ -15,10 +15,10 @@ export default class Cursor {
 
   setup() {
     if (this.#maxDigits === 1) {
-      this.#moveCursor(9, 4);
+      this.#moveCursor(9, 6);
       return;
     }
-    this.#moveCursor(11, 4);
+    this.#moveCursor(11, 6);
   }
 
   position() {
