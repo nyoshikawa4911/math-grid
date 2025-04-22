@@ -18,8 +18,7 @@ export default class MathGrid {
 
   async start() {
     this.#gridModel.setup();
-    console.clear();
-    console.log(Formatter.format(this.#gridModel));
+    this.#render(Formatter.format(this.#gridModel));
     this.#cursor.setup();
     await this.#keyInput.waitKeyInput();
   }
@@ -34,8 +33,7 @@ export default class MathGrid {
         if (!this.#gridModel.areAllCellsFilled()) return false;
 
         this.#gridModel.checkAnswers();
-        console.clear();
-        console.log(Formatter.formatResult(this.#gridModel));
+        this.#render(Formatter.formatResult(this.#gridModel));
         break;
       case KEY_EVENT.CR:
         this.#cursor.moveNext();
@@ -60,6 +58,11 @@ export default class MathGrid {
     }
 
     return true;
+  }
+
+  #render(content) {
+    console.clear();
+    console.log(content);
   }
 
   #cellUpdate() {
