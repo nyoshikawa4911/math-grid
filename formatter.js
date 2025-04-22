@@ -9,11 +9,7 @@ export default class Formatter {
     for (const row of gridModel.grid) {
       const rowContent = [colSeparator];
       for (const num of row) {
-        rowContent.push(
-          num === null
-            ? " ".repeat(gridModel.maxDigits + 1)
-            : num.toString().padStart(gridModel.maxDigits + 1, " "),
-        );
+        rowContent.push(this.#padCellContent(num, gridModel));
         rowContent.push(colSeparator);
       }
       content.push(rowContent.join(" "));
@@ -43,38 +39,34 @@ export default class Formatter {
   }
 
   static #formatHelpMessage() {
-    return (
-      "The following keys are available.\n" +
-      "  0-9   : Input numerical values.\n" +
-      " Enter  : Move the cursor to the next cell.\n" +
-      " Arrows : Move the cursor in the specified direction.\n" +
-      " BS/DEL : Erase one digit of the inputted number.\n" +
-      " Ctrl+D : Scoring (Only when all cells have been filled in).\n" +
-      " Ctrl+C : Quit the game."
-    );
+    return [
+      "The following keys are available.",
+      "  0-9   : Input numerical values.",
+      " Enter  : Move the cursor to the next cell.",
+      " Arrows : Move the cursor in the specified direction.",
+      " BS/DEL : Erase one digit of the inputted number.",
+      " Ctrl+D : Scoring (Only when all cells have been filled in).",
+      " Ctrl+C : Quit the game.",
+    ].join("\n");
   }
 
   static #formatResultGrid(gridModel) {
-    const gridWidth = gridModel.gridWidth;
-    const maxDigits = gridModel.maxDigits;
     const rowSeparator = this.#rowSeparator(gridModel);
     const colSeparator = "|";
 
     const content = [rowSeparator];
-    for (let rowIndex = 0; rowIndex < gridWidth + 1; rowIndex++) {
+    for (let rowIndex = 0; rowIndex < gridModel.gridWidth + 1; rowIndex++) {
       const rowContent = [colSeparator];
-      for (let colIndex = 0; colIndex < gridWidth + 1; colIndex++) {
+      for (let colIndex = 0; colIndex < gridModel.gridWidth + 1; colIndex++) {
         const num = gridModel.grid[rowIndex][colIndex];
-        const cellContent =
-          num === null ? " ".repeat(maxDigits + 1) : num.toString().padStart(maxDigits + 1, " ");
+        let cellContent = this.#padCellContent(num, gridModel);
         const isMistake = gridModel.mistakes.some(
           (mistake) => mistake.rowIndex === rowIndex && mistake.colIndex === colIndex,
         );
         if (isMistake) {
-          rowContent.push(ANSI_BASIC_COLOR.BACK_RED + cellContent + ANSI_BASIC_COLOR.RESET);
-        } else {
-          rowContent.push(cellContent);
+          cellContent = ANSI_BASIC_COLOR.BACK_RED + cellContent + ANSI_BASIC_COLOR.RESET;
         }
+        rowContent.push(cellContent);
         rowContent.push(colSeparator);
       }
       content.push(rowContent.join(" "));
@@ -93,11 +85,14 @@ export default class Formatter {
     ].join("\n");
   }
 
+  static #padCellContent(num, gridModel) {
+    return num === null
+      ? " ".repeat(gridModel.maxDigits + 1)
+      : num.toString().padStart(gridModel.maxDigits + 1, " ");
+  }
+
   static #rowSeparator(gridModel) {
-    if (gridModel.maxDigits === 1) {
-      return "-".repeat(CELL_WIDTH.ONE_DIGIT * (gridModel.gridWidth + 1) + 1);
-    } else if (gridModel.maxDigits === 2) {
-      return "-".repeat(CELL_WIDTH.TWO_DIGITS * (gridModel.gridWidth + 1) + 1);
-    }
+    const repeatCount = gridModel.maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS;
+    return "-".repeat(repeatCount * (gridModel.gridWidth + 1) + 1);
   }
 }
