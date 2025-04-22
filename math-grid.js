@@ -33,6 +33,8 @@ export default class MathGrid {
     if (eventData.keyCode) {
       switch (eventData.keyCode) {
         case KEY_CODE.EOT:
+          if (!this.#gridModel.areAllCellsFilled()) return false;
+
           this.#gridModel.checkAnswers();
           console.clear();
           console.log(Formatter.formatResult(this.#gridModel));
@@ -63,6 +65,8 @@ export default class MathGrid {
       }
       this.#syncKeyInputBuffer();
     }
+
+    return true;
   }
 
   #cellUpdate() {

@@ -57,6 +57,12 @@ export default class GridModel {
     return this.#score;
   }
 
+  areAllCellsFilled() {
+    return this.#grid.every((rows) => {
+      return rows.every((cell) => cell !== null);
+    });
+  }
+
   checkAnswers() {
     this.#mistakes = [];
 

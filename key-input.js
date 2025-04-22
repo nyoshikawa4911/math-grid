@@ -33,8 +33,10 @@ export default class KeyInput {
         }
 
         if (keyCode === KEY_CODE.EOT) {
-          this.#notify({ keyCode: keyCode });
-          waitingForAnyKey = true;
+          const result = this.#notify({ keyCode: keyCode });
+          if (result) {
+            waitingForAnyKey = true;
+          }
           return;
         }
 
@@ -81,9 +83,13 @@ export default class KeyInput {
       value: rawData.value ?? null,
     };
 
+    const results = [];
     for (const observer of this.#observers) {
-      observer.update(eventData);
+      const result = observer.update(eventData);
+      results.push(result);
     }
+
+    return !results.includes(false);
   }
 
   #startRawInput() {

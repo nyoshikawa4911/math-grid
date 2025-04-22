@@ -49,7 +49,7 @@ export default class Formatter {
       " Enter  : Move the cursor to the next cell.\n" +
       " Arrows : Move the cursor in the specified direction.\n" +
       " BS/DEL : Erase one digit of the inputted number.\n" +
-      " Ctrl+D : Scoring.\n" +
+      " Ctrl+D : Scoring (Only when all cells have been filled in).\n" +
       " Ctrl+C : Quit the game."
     );
   }
