@@ -1,4 +1,4 @@
-import { KEY_CODE, ANSI_DIRECTION } from "./constants.js";
+import { KEY_CODE, ANSI_DIRECTION, KEY_EVENT } from "./constants.js";
 
 export default class KeyInput {
   #observers;
@@ -33,7 +33,7 @@ export default class KeyInput {
         }
 
         if (keyCode === KEY_CODE.EOT) {
-          const result = this.#notify({ keyCode: keyCode });
+          const result = this.#notify({ keyEvent: KEY_EVENT.EOT });
           if (result) {
             waitingForAnyKey = true;
           }
@@ -50,39 +50,36 @@ export default class KeyInput {
           if (this.#buffer === "" && keyCode === KEY_CODE.ZERO) return;
 
           if (this.#appendToBuffer(key)) {
-            this.#notify({ value: parseInt(this.#buffer) });
+            this.#notify({ keyEvent: KEY_EVENT.CHANGE_VALUE, value: parseInt(this.#buffer) });
           }
           return;
         }
 
         if (keyCode === KEY_CODE.BS || keyCode === KEY_CODE.DEL) {
           if (this.#removeFromBuffer()) {
-            this.#notify({ value: this.#buffer === "" ? NaN : parseInt(this.#buffer) });
+            this.#notify({
+              keyEvent: KEY_EVENT.CHANGE_VALUE,
+              value: this.#buffer === "" ? NaN : parseInt(this.#buffer),
+            });
           }
           return;
         }
 
         if (keyCode === KEY_CODE.CR) {
           this.#clearBuffer();
-          this.#notify({ keyCode: keyCode });
+          this.#notify({ keyEvent: KEY_EVENT.CR });
           return;
         }
 
         if (this.#isArrowKey(key)) {
           this.#clearBuffer();
-          this.#notify({ ansi: key });
+          this.#notify({ keyEvent: this.#convertToKeyEvent(key) });
         }
       });
     });
   }
 
-  #notify(rawData) {
-    const eventData = {
-      keyCode: rawData.keyCode ?? null,
-      ansi: rawData.ansi ?? null,
-      value: rawData.value ?? null,
-    };
-
+  #notify(eventData) {
     const results = [];
     for (const observer of this.#observers) {
       const result = observer.update(eventData);
@@ -113,6 +110,19 @@ export default class KeyInput {
         return true;
       default:
         return false;
+    }
+  }
+
+  #convertToKeyEvent(key) {
+    switch (key) {
+      case ANSI_DIRECTION.UP:
+        return KEY_EVENT.UP;
+      case ANSI_DIRECTION.DOWN:
+        return KEY_EVENT.DOWN;
+      case ANSI_DIRECTION.LEFT:
+        return KEY_EVENT.LEFT;
+      case ANSI_DIRECTION.RIGHT:
+        return KEY_EVENT.RIGHT;
     }
   }
 

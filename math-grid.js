@@ -2,7 +2,7 @@ import GridModel from "./grid-model.js";
 import KeyInput from "./key-input.js";
 import Formatter from "./formatter.js";
 import Cursor from "./cursor.js";
-import { KEY_CODE, ANSI_DIRECTION } from "./constants.js";
+import { KEY_EVENT } from "./constants.js";
 
 export default class MathGrid {
   #gridModel;
@@ -25,45 +25,38 @@ export default class MathGrid {
   }
 
   update(eventData) {
-    if (eventData.value !== null) {
-      this.#gridModel.update(...this.#cursor.position(), eventData.value);
-      this.#cellUpdate();
-    }
+    switch (eventData.keyEvent) {
+      case KEY_EVENT.CHANGE_VALUE:
+        this.#gridModel.update(...this.#cursor.position(), eventData.value);
+        this.#cellUpdate();
+        break;
+      case KEY_EVENT.EOT:
+        if (!this.#gridModel.areAllCellsFilled()) return false;
 
-    if (eventData.keyCode) {
-      switch (eventData.keyCode) {
-        case KEY_CODE.EOT:
-          if (!this.#gridModel.areAllCellsFilled()) return false;
-
-          this.#gridModel.checkAnswers();
-          console.clear();
-          console.log(Formatter.formatResult(this.#gridModel));
-          break;
-        case KEY_CODE.CR:
-          this.#cursor.moveNext();
-          this.#syncKeyInputBuffer();
-          break;
-      }
-    }
-
-    if (eventData.ansi) {
-      switch (eventData.ansi) {
-        case ANSI_DIRECTION.UP:
-          this.#cursor.moveUp();
-          break;
-        case ANSI_DIRECTION.DOWN:
-          this.#cursor.moveDown();
-          break;
-        case ANSI_DIRECTION.LEFT:
-          this.#cursor.moveLeft();
-          break;
-        case ANSI_DIRECTION.RIGHT:
-          this.#cursor.moveRight();
-          break;
-        default:
-          return;
-      }
-      this.#syncKeyInputBuffer();
+        this.#gridModel.checkAnswers();
+        console.clear();
+        console.log(Formatter.formatResult(this.#gridModel));
+        break;
+      case KEY_EVENT.CR:
+        this.#cursor.moveNext();
+        this.#syncKeyInputBuffer();
+        break;
+      case KEY_EVENT.UP:
+        this.#cursor.moveUp();
+        this.#syncKeyInputBuffer();
+        break;
+      case KEY_EVENT.DOWN:
+        this.#cursor.moveDown();
+        this.#syncKeyInputBuffer();
+        break;
+      case KEY_EVENT.LEFT:
+        this.#cursor.moveLeft();
+        this.#syncKeyInputBuffer();
+        break;
+      case KEY_EVENT.RIGHT:
+        this.#cursor.moveRight();
+        this.#syncKeyInputBuffer();
+        break;
     }
 
     return true;

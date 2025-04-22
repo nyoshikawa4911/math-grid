@@ -45,3 +45,13 @@ export const ANSI_BASIC_COLOR = {
   BACK_RED: `${ANSI_ESC}41m`,
   RESET: `${ANSI_ESC}0m`,
 };
+
+export const KEY_EVENT = {
+  CHANGE_VALUE: "CHANGE_VALUE",
+  EOT: "EOT",
+  CR: "CR",
+  UP: "UP",
+  DOWN: "DOWN",
+  LEFT: "LEFT",
+  RIGHT: "RIGHT",
+};
