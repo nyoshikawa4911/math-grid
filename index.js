@@ -41,7 +41,7 @@ const menuQuestions = [
       { id: MENU_ID.QUIT, name: "Quit", description: "Exit the game." },
     ],
     footer() {
-      return this.selected.description;
+      return `\n  ${this.selected.description}`;
     },
     result() {
       return this.selected.id;
@@ -59,7 +59,7 @@ const digitQuestions = [
       { id: DIGIT_ID.TWO, name: "2 Digits", description: "Calculate with two-digit numbers." },
     ],
     footer() {
-      return this.selected.description;
+      return `\n  ${this.selected.description}`;
     },
     result() {
       return this.selected.id;
