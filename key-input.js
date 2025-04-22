@@ -23,70 +23,41 @@ export default class KeyInput {
     return new Promise((resolve) => {
       let waitingForAnyKey = false;
       this.#startRawInput();
+
       process.stdin.on("data", (key) => {
         const keyCode = key.charCodeAt(0);
 
-        if (waitingForAnyKey) {
+        if (waitingForAnyKey || keyCode === KEY_CODE.ETX) {
           this.#stopRawInput();
           resolve();
           return;
         }
 
         if (keyCode === KEY_CODE.EOT) {
-          const result = this.#notify({ keyEvent: KEY_EVENT.EOT });
-          if (result) {
-            waitingForAnyKey = true;
-          }
-          return;
-        }
-
-        if (keyCode === KEY_CODE.ETX) {
-          this.#stopRawInput();
-          resolve();
-          return;
+          return this.#handleEOTKey(
+            function () {
+              waitingForAnyKey = true;
+            }.bind(this),
+          );
         }
 
         if (KEY_CODE.ZERO <= keyCode && keyCode <= KEY_CODE.NINE) {
-          if (this.#buffer === "" && keyCode === KEY_CODE.ZERO) return;
-
-          if (this.#appendToBuffer(key)) {
-            this.#notify({ keyEvent: KEY_EVENT.CHANGE_VALUE, value: parseInt(this.#buffer) });
-          }
-          return;
+          return this.#handleNumberKey(key, keyCode);
         }
 
         if (keyCode === KEY_CODE.BS || keyCode === KEY_CODE.DEL) {
-          if (this.#removeFromBuffer()) {
-            this.#notify({
-              keyEvent: KEY_EVENT.CHANGE_VALUE,
-              value: this.#buffer === "" ? null : parseInt(this.#buffer),
-            });
-          }
-          return;
+          return this.#handleBackspaceKey();
         }
 
         if (keyCode === KEY_CODE.CR) {
-          this.#clearBuffer();
-          this.#notify({ keyEvent: KEY_EVENT.CR });
-          return;
+          return this.#handleEnterKey();
         }
 
         if (this.#isArrowKey(key)) {
-          this.#clearBuffer();
-          this.#notify({ keyEvent: this.#convertToKeyEvent(key) });
+          return this.#handleArrowKey(key);
         }
       });
     });
-  }
-
-  #notify(eventData) {
-    const results = [];
-    for (const observer of this.#observers) {
-      const result = observer.update(eventData);
-      results.push(result);
-    }
-
-    return !results.includes(false);
   }
 
   #startRawInput() {
@@ -101,29 +72,67 @@ export default class KeyInput {
     process.stdin.removeAllListeners("data");
   }
 
-  #isArrowKey(key) {
-    switch (key) {
-      case ANSI_DIRECTION.UP:
-      case ANSI_DIRECTION.DOWN:
-      case ANSI_DIRECTION.LEFT:
-      case ANSI_DIRECTION.RIGHT:
-        return true;
-      default:
-        return false;
+  #handleEOTKey(setWaitingFlagCallback) {
+    if (this.#notify({ keyEvent: KEY_EVENT.EOT })) {
+      setWaitingFlagCallback();
     }
   }
 
-  #convertToKeyEvent(key) {
-    switch (key) {
-      case ANSI_DIRECTION.UP:
-        return KEY_EVENT.UP;
-      case ANSI_DIRECTION.DOWN:
-        return KEY_EVENT.DOWN;
-      case ANSI_DIRECTION.LEFT:
-        return KEY_EVENT.LEFT;
-      case ANSI_DIRECTION.RIGHT:
-        return KEY_EVENT.RIGHT;
+  #handleNumberKey(key, keyCode) {
+    if (this.#buffer === "" && keyCode === KEY_CODE.ZERO) return;
+
+    if (this.#appendToBuffer(key)) {
+      this.#notify({ keyEvent: KEY_EVENT.CHANGE_VALUE, value: parseInt(this.#buffer) });
     }
+  }
+
+  #handleBackspaceKey() {
+    if (!this.#removeFromBuffer()) return;
+
+    this.#notify({
+      keyEvent: KEY_EVENT.CHANGE_VALUE,
+      value: this.#buffer === "" ? null : parseInt(this.#buffer),
+    });
+  }
+
+  #handleEnterKey() {
+    this.#clearBuffer();
+    this.#notify({ keyEvent: KEY_EVENT.CR });
+  }
+
+  #handleArrowKey(key) {
+    this.#clearBuffer();
+    this.#notify({ keyEvent: this.#convertToKeyEvent(key) });
+  }
+
+  #notify(eventData) {
+    const results = [];
+    for (const observer of this.#observers) {
+      const result = observer.update(eventData);
+      results.push(result);
+    }
+
+    return !results.includes(false);
+  }
+
+  #isArrowKey(key) {
+    const arrowKeys = [
+      ANSI_DIRECTION.UP,
+      ANSI_DIRECTION.DOWN,
+      ANSI_DIRECTION.LEFT,
+      ANSI_DIRECTION.RIGHT,
+    ];
+    return arrowKeys.includes(key);
+  }
+
+  #convertToKeyEvent(key) {
+    const keyMap = {
+      [ANSI_DIRECTION.UP]: KEY_EVENT.UP,
+      [ANSI_DIRECTION.DOWN]: KEY_EVENT.DOWN,
+      [ANSI_DIRECTION.LEFT]: KEY_EVENT.LEFT,
+      [ANSI_DIRECTION.RIGHT]: KEY_EVENT.RIGHT,
+    };
+    return keyMap[key];
   }
 
   #appendToBuffer(key) {
