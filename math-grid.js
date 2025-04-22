@@ -32,9 +32,6 @@ export default class MathGrid {
 
     if (eventData.keyCode) {
       switch (eventData.keyCode) {
-        case KEY_CODE.ETX:
-          // todo : 終了
-          break;
         case KEY_CODE.EOT:
           this.#gridModel.checkAnswers();
           console.clear();

@@ -40,7 +40,6 @@ export default class KeyInput {
 
         if (keyCode === KEY_CODE.ETX) {
           this.#stopRawInput();
-          this.#notify({ keyCode: keyCode });
           resolve();
           return;
         }
