@@ -14,11 +14,8 @@ export default class Cursor {
   }
 
   setup() {
-    if (this.#maxDigits === 1) {
-      this.#moveCursor(9, 6);
-      return;
-    }
-    this.#moveCursor(11, 6);
+    const initialCoordinate = this.#initialCoordinate();
+    this.#ansiCursorMoveAbs(initialCoordinate.x, initialCoordinate.y);
   }
 
   position() {
@@ -28,76 +25,53 @@ export default class Cursor {
   moveUp() {
     if (this.#isFirstRow()) return;
 
-    process.stdout.write(`${ANSI_ESC}2A`);
+    this.#ansiCursorMoveUp(2);
     this.#rowPosition--;
   }
 
   moveDown() {
     if (this.#isLastRow()) return;
 
-    process.stdout.write(`${ANSI_ESC}2B`);
+    this.#ansiCursorMoveDown(2);
     this.#rowPosition++;
   }
 
   moveRight() {
     if (this.#isLastColumn()) return;
 
-    if (this.#maxDigits === 1) {
-      process.stdout.write(`${ANSI_ESC}${CELL_WIDTH.ONE_DIGIT}C`);
-    } else {
-      process.stdout.write(`${ANSI_ESC}${CELL_WIDTH.TWO_DIGITS}C`);
-    }
+    const size = this.#maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS;
+    this.#ansiCursorMoveRight(size);
     this.#colPosition++;
   }
 
   moveLeft() {
     if (this.#isFirstColumn()) return;
 
-    if (this.#maxDigits === 1) {
-      process.stdout.write(`${ANSI_ESC}${CELL_WIDTH.ONE_DIGIT}D`);
-    } else {
-      process.stdout.write(`${ANSI_ESC}${CELL_WIDTH.TWO_DIGITS}D`);
-    }
+    const size = this.#maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS;
+    this.#ansiCursorMoveLeft(size);
     this.#colPosition--;
   }
 
   moveNext() {
     if (this.#isLastRow() && this.#isLastColumn()) return;
 
-    if (this.#isLastColumn()) {
-      this.moveDown();
-      for (let i = 0; i < this.#gridWidth; i++) {
-        this.moveLeft();
-      }
+    if (!this.#isLastColumn()) {
+      this.moveRight();
       return;
     }
 
-    this.moveRight();
+    this.#rowPosition++;
+    this.#colPosition = 0;
+    this.#moveCurrent();
   }
 
-  moveCurrent() {
-    this.setup();
-    const rightAmount =
-      this.#colPosition * (this.#maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS);
-    const downAmount = this.#rowPosition * 2;
-    if (rightAmount !== 0) {
-      process.stdout.write(`${ANSI_ESC}${rightAmount}C`);
-    }
-    if (downAmount !== 0) {
-      process.stdout.write(`${ANSI_ESC}${downAmount}B`);
-    }
+  moveCurrentCellHead() {
+    this.#moveCurrent();
+    this.#ansiCursorMoveLeft(this.#maxDigits);
   }
 
-  moveCellHead() {
-    if (this.#maxDigits === 1) {
-      process.stdout.write(`${ANSI_ESC}1D`);
-    } else {
-      process.stdout.write(`${ANSI_ESC}2D`);
-    }
-  }
-
-  #moveCursor(absX, absY) {
-    process.stdout.write(`${ANSI_ESC}${absY};${absX}H`);
+  moveCurrentCellTail() {
+    this.#moveCurrent();
   }
 
   #isFirstRow() {
@@ -114,5 +88,41 @@ export default class Cursor {
 
   #isLastColumn() {
     return this.#colPosition === this.#gridWidth - 1;
+  }
+
+  #initialCoordinate() {
+    if (this.#maxDigits === 1) {
+      return { x: 9, y: 6 };
+    } else {
+      return { x: 11, y: 6 };
+    }
+  }
+
+  #moveCurrent() {
+    const initialCoordinate = this.#initialCoordinate();
+    const cellWidth = this.#maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS;
+    const coordinateX = initialCoordinate.x + cellWidth * this.#colPosition;
+    const coordinateY = initialCoordinate.y + 2 * this.#rowPosition;
+    this.#ansiCursorMoveAbs(coordinateX, coordinateY);
+  }
+
+  #ansiCursorMoveAbs(absX, absY) {
+    process.stdout.write(`${ANSI_ESC}${absY};${absX}H`);
+  }
+
+  #ansiCursorMoveUp(size) {
+    process.stdout.write(`${ANSI_ESC}${size}A`);
+  }
+
+  #ansiCursorMoveDown(size) {
+    process.stdout.write(`${ANSI_ESC}${size}B`);
+  }
+
+  #ansiCursorMoveRight(size) {
+    process.stdout.write(`${ANSI_ESC}${size}C`);
+  }
+
+  #ansiCursorMoveLeft(size) {
+    process.stdout.write(`${ANSI_ESC}${size}D`);
   }
 }

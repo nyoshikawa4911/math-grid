@@ -66,9 +66,9 @@ export default class MathGrid {
   }
 
   #cellUpdate() {
-    this.#cursor.moveCellHead();
+    this.#cursor.moveCurrentCellHead();
     process.stdout.write(Formatter.formatCell(this.#gridModel, ...this.#cursor.position()));
-    this.#cursor.moveCurrent();
+    this.#cursor.moveCurrentCellTail();
   }
 
   #syncKeyInputBuffer() {
