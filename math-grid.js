@@ -23,7 +23,7 @@ export default class MathGrid {
     await this.#keyInput.waitKeyInput();
   }
 
-  update(eventData) {
+  updateFromKeyEvent(eventData) {
     switch (eventData.keyEvent) {
       case KEY_EVENT.CHANGE_VALUE:
         this.#gridModel.update(...this.#gridIndexFromCursorPosition(), eventData.value);

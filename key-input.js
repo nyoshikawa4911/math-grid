@@ -108,7 +108,7 @@ export default class KeyInput {
   #notify(eventData) {
     const results = [];
     for (const observer of this.#observers) {
-      const result = observer.update(eventData);
+      const result = observer.updateFromKeyEvent(eventData);
       results.push(result);
     }
 
