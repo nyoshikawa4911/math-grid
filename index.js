@@ -89,4 +89,10 @@ const main = async () => {
   }
 };
 
-main();
+try {
+  await main();
+} catch (err) {
+  if (err instanceof Error) {
+    console.error(err.message);
+  }
+}
