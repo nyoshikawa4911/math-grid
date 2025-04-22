@@ -26,7 +26,7 @@ export default class GridModel {
   }
 
   update(rowIndex, colIndex, value) {
-    this.#grid[rowIndex + 1][colIndex + 1] = isNaN(value) ? null : value;
+    this.#grid[rowIndex + 1][colIndex + 1] = value;
   }
 
   getValue(rowIndex, colIndex) {

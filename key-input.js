@@ -59,7 +59,7 @@ export default class KeyInput {
           if (this.#removeFromBuffer()) {
             this.#notify({
               keyEvent: KEY_EVENT.CHANGE_VALUE,
-              value: this.#buffer === "" ? NaN : parseInt(this.#buffer),
+              value: this.#buffer === "" ? null : parseInt(this.#buffer),
             });
           }
           return;
