@@ -33,7 +33,7 @@ export const KEY_CODE = {
 
 export const ANSI_ESC = "\x1b[";
 
-export const ANSI = {
+export const ANSI_DIRECTION = {
   UP: `${ANSI_ESC}A`,
   DOWN: `${ANSI_ESC}B`,
   RIGHT: `${ANSI_ESC}C`,

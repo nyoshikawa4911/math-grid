@@ -1,4 +1,4 @@
-import { KEY_CODE, ANSI } from "./constants.js";
+import { KEY_CODE, ANSI_DIRECTION } from "./constants.js";
 
 export default class KeyInput {
   #observers;
@@ -106,10 +106,10 @@ export default class KeyInput {
 
   #isArrowKey(key) {
     switch (key) {
-      case ANSI.UP:
-      case ANSI.DOWN:
-      case ANSI.LEFT:
-      case ANSI.RIGHT:
+      case ANSI_DIRECTION.UP:
+      case ANSI_DIRECTION.DOWN:
+      case ANSI_DIRECTION.LEFT:
+      case ANSI_DIRECTION.RIGHT:
         return true;
       default:
         return false;

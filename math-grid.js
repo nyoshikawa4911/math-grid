@@ -2,7 +2,7 @@ import GridModel from "./grid-model.js";
 import KeyInput from "./key-input.js";
 import Formatter from "./formatter.js";
 import Cursor from "./cursor.js";
-import { KEY_CODE, ANSI } from "./constants.js";
+import { KEY_CODE, ANSI_DIRECTION } from "./constants.js";
 
 export default class MathGrid {
   #gridModel;
@@ -48,16 +48,16 @@ export default class MathGrid {
 
     if (eventData.ansi) {
       switch (eventData.ansi) {
-        case ANSI.UP:
+        case ANSI_DIRECTION.UP:
           this.#cursor.moveUp();
           break;
-        case ANSI.DOWN:
+        case ANSI_DIRECTION.DOWN:
           this.#cursor.moveDown();
           break;
-        case ANSI.LEFT:
+        case ANSI_DIRECTION.LEFT:
           this.#cursor.moveLeft();
           break;
-        case ANSI.RIGHT:
+        case ANSI_DIRECTION.RIGHT:
           this.#cursor.moveRight();
           break;
         default:
