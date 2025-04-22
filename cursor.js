@@ -1,4 +1,4 @@
-import { CELL_WIDTH, ANSI_ESC } from "./constants.js";
+import { CELL_HEIGHT, CELL_WIDTH, ANSI_ESC } from "./constants.js";
 
 export default class Cursor {
   #rowPosition;
@@ -25,14 +25,14 @@ export default class Cursor {
   moveUp() {
     if (this.#isFirstRow()) return;
 
-    this.#ansiCursorMoveUp(2);
+    this.#ansiCursorMoveUp(CELL_HEIGHT);
     this.#rowPosition--;
   }
 
   moveDown() {
     if (this.#isLastRow()) return;
 
-    this.#ansiCursorMoveDown(2);
+    this.#ansiCursorMoveDown(CELL_HEIGHT);
     this.#rowPosition++;
   }
 
@@ -102,7 +102,7 @@ export default class Cursor {
     const initialCoordinate = this.#initialCoordinate();
     const cellWidth = this.#maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS;
     const coordinateX = initialCoordinate.x + cellWidth * this.#colPosition;
-    const coordinateY = initialCoordinate.y + 2 * this.#rowPosition;
+    const coordinateY = initialCoordinate.y + CELL_HEIGHT * this.#rowPosition;
     this.#ansiCursorMoveAbs(coordinateX, coordinateY);
   }
 

@@ -14,6 +14,8 @@ export const DIGIT_ID = {
   TWO: 2,
 };
 
+export const CELL_HEIGHT = 2;
+
 export const CELL_WIDTH = {
   ONE_DIGIT: 5,
   TWO_DIGITS: 6,
