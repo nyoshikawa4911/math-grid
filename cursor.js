@@ -39,16 +39,14 @@ export default class Cursor {
   moveRight() {
     if (this.#isLastColumn()) return;
 
-    const size = this.#maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS;
-    this.#ansiCursorMoveRight(size);
+    this.#ansiCursorMoveRight(this.#cellWidth());
     this.#colPosition++;
   }
 
   moveLeft() {
     if (this.#isFirstColumn()) return;
 
-    const size = this.#maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS;
-    this.#ansiCursorMoveLeft(size);
+    this.#ansiCursorMoveLeft(this.#cellWidth());
     this.#colPosition--;
   }
 
@@ -100,10 +98,13 @@ export default class Cursor {
 
   #moveCurrent() {
     const initialCoordinate = this.#initialCoordinate();
-    const cellWidth = this.#maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS;
-    const coordinateX = initialCoordinate.x + cellWidth * this.#colPosition;
+    const coordinateX = initialCoordinate.x + this.#cellWidth() * this.#colPosition;
     const coordinateY = initialCoordinate.y + CELL_HEIGHT * this.#rowPosition;
     this.#ansiCursorMoveAbs(coordinateX, coordinateY);
+  }
+
+  #cellWidth() {
+    return this.#maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS;
   }
 
   #ansiCursorMoveAbs(absX, absY) {
