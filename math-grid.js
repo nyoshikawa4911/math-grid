@@ -39,7 +39,7 @@ export default class MathGrid {
           break;
         case KEY_CODE.CR:
           this.#cursor.moveNext();
-          this.#syncBuffer();
+          this.#syncKeyInputBuffer();
           break;
       }
     }
@@ -61,7 +61,7 @@ export default class MathGrid {
         default:
           return;
       }
-      this.#syncBuffer();
+      this.#syncKeyInputBuffer();
     }
   }
 
@@ -71,7 +71,7 @@ export default class MathGrid {
     this.#cursor.moveCurrent();
   }
 
-  #syncBuffer() {
+  #syncKeyInputBuffer() {
     const value = this.#gridModel.getValue(...this.#cursor.position());
     if (value !== null) {
       this.#keyInput.setBuffer(value.toString());
