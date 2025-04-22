@@ -1,7 +1,4 @@
-import { ANSI_BASIC_COLOR } from "./constants.js";
-
-const SEPARATOR_OF_1CELL_FOR_1DIGITS = "-----";
-const SEPARATOR_OF_1CELL_FOR_2DIGITS = "------";
+import { CELL_WIDTH, ANSI_BASIC_COLOR } from "./constants.js";
 
 export default class Formatter {
   static format(gridModel) {
@@ -98,9 +95,9 @@ export default class Formatter {
 
   static #rowSeparator(gridModel) {
     if (gridModel.maxDigits === 1) {
-      return SEPARATOR_OF_1CELL_FOR_1DIGITS.repeat(gridModel.gridWidth + 1) + "-";
+      return "-".repeat(CELL_WIDTH.ONE_DIGIT * (gridModel.gridWidth + 1) + 1);
     } else if (gridModel.maxDigits === 2) {
-      return SEPARATOR_OF_1CELL_FOR_2DIGITS.repeat(gridModel.gridWidth + 1) + "-";
+      return "-".repeat(CELL_WIDTH.TWO_DIGITS * (gridModel.gridWidth + 1) + 1);
     }
   }
 }

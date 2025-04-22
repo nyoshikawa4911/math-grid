@@ -1,4 +1,4 @@
-import { ANSI_ESC } from "./constants.js";
+import { CELL_WIDTH, ANSI_ESC } from "./constants.js";
 
 export default class Cursor {
   #rowPosition;
@@ -43,9 +43,9 @@ export default class Cursor {
     if (this.#isLastColumn()) return;
 
     if (this.#maxDigits === 1) {
-      process.stdout.write(`${ANSI_ESC}5C`);
+      process.stdout.write(`${ANSI_ESC}${CELL_WIDTH.ONE_DIGIT}C`);
     } else {
-      process.stdout.write(`${ANSI_ESC}6C`);
+      process.stdout.write(`${ANSI_ESC}${CELL_WIDTH.TWO_DIGITS}C`);
     }
     this.#colPosition++;
   }
@@ -54,9 +54,9 @@ export default class Cursor {
     if (this.#isFirstColumn()) return;
 
     if (this.#maxDigits === 1) {
-      process.stdout.write(`${ANSI_ESC}5D`);
+      process.stdout.write(`${ANSI_ESC}${CELL_WIDTH.ONE_DIGIT}D`);
     } else {
-      process.stdout.write(`${ANSI_ESC}6D`);
+      process.stdout.write(`${ANSI_ESC}${CELL_WIDTH.TWO_DIGITS}D`);
     }
     this.#colPosition--;
   }
@@ -77,7 +77,8 @@ export default class Cursor {
 
   moveCurrent() {
     this.setup();
-    const rightAmount = this.#colPosition * (this.#maxDigits === 1 ? 5 : 6);
+    const rightAmount =
+      this.#colPosition * (this.#maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS);
     const downAmount = this.#rowPosition * 2;
     if (rightAmount !== 0) {
       process.stdout.write(`${ANSI_ESC}${rightAmount}C`);

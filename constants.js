@@ -14,6 +14,11 @@ export const DIGIT_ID = {
   TWO: 2,
 };
 
+export const CELL_WIDTH = {
+  ONE_DIGIT: 5,
+  TWO_DIGITS: 6,
+};
+
 export const KEY_CODE = {
   ETX: 0x03,
   EOT: 0x04,
@@ -25,6 +30,7 @@ export const KEY_CODE = {
 };
 
 export const ANSI_ESC = "\x1b[";
+
 export const ANSI = {
   UP: `${ANSI_ESC}A`,
   DOWN: `${ANSI_ESC}B`,
