@@ -44,7 +44,7 @@ export default class MathGrid {
         case KEY_CODE.EOT:
           this.#gridModel.checkAnswers();
           console.clear();
-          console.log(Formatter.formatResultGrid(this.#gridModel));
+          console.log(Formatter.formatResult(this.#gridModel));
           break;
         case KEY_CODE.CR:
           this.#cursor.moveNext();

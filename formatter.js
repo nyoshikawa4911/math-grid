@@ -31,7 +31,11 @@ export default class Formatter {
     return numString.padStart(gridModel.maxDigits + 1, " ");
   }
 
-  static formatResultGrid(gridModel) {
+  static formatResult(gridModel) {
+    return [this.#formatResultGrid(gridModel), "", this.#formatResultMessage(gridModel)].join("\n");
+  }
+
+  static #formatResultGrid(gridModel) {
     const gridWidth = gridModel.gridWidth;
     const maxDigits = gridModel.maxDigits;
     const rowSeparator = this.#rowSeparator(gridModel);
@@ -59,6 +63,15 @@ export default class Formatter {
     }
 
     return content.join("\n");
+  }
+
+  static #formatResultMessage(gridModel) {
+    const messageForPerfect = gridModel.score === gridModel.perfectScore ? "(Perfect!!)" : "";
+    return [
+      `Correct : ${gridModel.score} / ${gridModel.perfectScore} ${messageForPerfect}`,
+      "",
+      "Press any key to return the menu.",
+    ].join("\n");
   }
 
   static #rowSeparator(gridModel) {

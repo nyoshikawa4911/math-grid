@@ -5,6 +5,8 @@ export default class GridModel {
   #targetRows;
   #targetCols;
   #mistakes;
+  #perfectScore;
+  #score;
 
   constructor(gridWidth, maxDigits) {
     this.#gridWidth = gridWidth;
@@ -57,6 +59,14 @@ export default class GridModel {
     return this.#mistakes;
   }
 
+  get perfectScore() {
+    return this.#perfectScore;
+  }
+
+  get score() {
+    return this.#score;
+  }
+
   checkAnswers() {
     this.#mistakes = [];
 
@@ -73,6 +83,9 @@ export default class GridModel {
         }
       }
     }
+
+    this.#perfectScore = this.gridWidth ** 2;
+    this.#score = this.#perfectScore - this.mistakes.length;
   }
 
   #randomInt() {
