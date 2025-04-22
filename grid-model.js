@@ -58,9 +58,14 @@ export default class GridModel {
   }
 
   areAllCellsFilled() {
-    return this.#grid.every((rows) => {
-      return rows.every((cell) => cell !== null);
-    });
+    for (let rowIndex = 1; rowIndex <= this.#gridWidth; rowIndex++) {
+      for (let colIndex = 1; colIndex <= this.#gridWidth; colIndex++) {
+        if (this.#grid[rowIndex][colIndex] === null) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   checkAnswers() {
