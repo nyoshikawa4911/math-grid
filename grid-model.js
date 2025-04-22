@@ -26,11 +26,11 @@ export default class GridModel {
   }
 
   update(rowIndex, colIndex, value) {
-    this.#grid[rowIndex + 1][colIndex + 1] = value;
+    this.#grid[rowIndex][colIndex] = value;
   }
 
   getValue(rowIndex, colIndex) {
-    return this.#grid[rowIndex + 1][colIndex + 1];
+    return this.#grid[rowIndex][colIndex];
   }
 
   get gridWidth() {

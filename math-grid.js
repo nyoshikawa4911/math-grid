@@ -26,7 +26,7 @@ export default class MathGrid {
   update(eventData) {
     switch (eventData.keyEvent) {
       case KEY_EVENT.CHANGE_VALUE:
-        this.#gridModel.update(...this.#cursor.position(), eventData.value);
+        this.#gridModel.update(...this.#gridIndexFromCursorPosition(), eventData.value);
         this.#cellUpdate();
         break;
       case KEY_EVENT.EOT:
@@ -67,14 +67,21 @@ export default class MathGrid {
 
   #cellUpdate() {
     this.#cursor.moveCurrentCellHead();
-    process.stdout.write(Formatter.formatCell(this.#gridModel, ...this.#cursor.position()));
+    const [rowIndex, colIndex] = this.#gridIndexFromCursorPosition();
+    process.stdout.write(Formatter.formatCell(this.#gridModel, rowIndex, colIndex));
     this.#cursor.moveCurrentCellTail();
   }
 
   #syncKeyInputBuffer() {
-    const value = this.#gridModel.getValue(...this.#cursor.position());
+    const [rowIndex, colIndex] = this.#gridIndexFromCursorPosition();
+    const value = this.#gridModel.getValue(rowIndex, colIndex);
     if (value !== null) {
       this.#keyInput.setBuffer(value.toString());
     }
+  }
+
+  #gridIndexFromCursorPosition() {
+    const [cursorRowPosition, cursorColPosition] = this.#cursor.position();
+    return [cursorRowPosition + 1, cursorColPosition + 1];
   }
 }

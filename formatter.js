@@ -19,7 +19,7 @@ export default class Formatter {
   }
 
   static formatCell(gridModel, rowIndex, colIndex) {
-    const value = gridModel.grid[rowIndex + 1][colIndex + 1];
+    const value = gridModel.getValue(rowIndex, colIndex);
     const numString = value === null ? "" : value.toString();
     return numString.padStart(gridModel.maxDigits + 1, " ");
   }
@@ -58,7 +58,7 @@ export default class Formatter {
     for (let rowIndex = 0; rowIndex < gridModel.gridWidth + 1; rowIndex++) {
       const rowContent = [colSeparator];
       for (let colIndex = 0; colIndex < gridModel.gridWidth + 1; colIndex++) {
-        const num = gridModel.grid[rowIndex][colIndex];
+        const num = gridModel.getValue(rowIndex, colIndex);
         let cellContent = this.#padCellContent(num, gridModel);
         const isMistake = gridModel.mistakes.some(
           (mistake) => mistake.rowIndex === rowIndex && mistake.colIndex === colIndex,
