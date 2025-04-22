@@ -2,7 +2,7 @@
 
 import enquirer from "enquirer";
 import MathGrid from "./math-grid.js";
-import { REQUIRED_TERMINAL_SIZE, MENU_ID, DIGIT_ID } from "./constants.js";
+import { REQUIRED_TERMINAL_SIZE, MENU_ID, DIGIT_ID, ANSI_BASIC_COLOR } from "./constants.js";
 
 const checkTerminalSize = () => {
   const terminalHeight = process.stdout.rows;
@@ -72,7 +72,9 @@ const main = async () => {
     if (!checkTerminalSize()) return;
 
     console.clear();
-    console.log("---------- Welcome to Math Grid ----------\n");
+    console.log(
+      `${ANSI_BASIC_COLOR.FORE_CYAN}---------- Welcome to Math Grid ----------${ANSI_BASIC_COLOR.RESET}\n`,
+    );
     const menuAnswer = await enquirer.prompt(menuQuestions);
     if (menuAnswer.id === MENU_ID.QUIT) {
       process.exit(0);
