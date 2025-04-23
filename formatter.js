@@ -2,20 +2,17 @@ import { CELL_WIDTH, ANSI_BASIC_COLOR } from "./constants.js";
 
 export default class Formatter {
   static format(gridModel) {
-    const rowSeparator = this.#rowSeparator(gridModel);
-    const colSeparator = "|";
+    const colSeparators = Array(gridModel.grid.length + 1).fill("|");
+    const rowSeparators = Array(gridModel.grid.length + 1).fill(this.#rowSeparator(gridModel));
+    const rowContents = [];
 
-    const content = [rowSeparator];
-    for (const row of gridModel.grid) {
-      const rowContent = [colSeparator];
-      for (const num of row) {
-        rowContent.push(this.#padCellContent(num, gridModel));
-        rowContent.push(colSeparator);
-      }
-      content.push(rowContent.join(" "));
-      content.push(rowSeparator);
+    for (const numbers of gridModel.grid) {
+      const paddedCells = numbers.map((num) => this.#padCellContent(num, gridModel.maxDigits + 1));
+      rowContents.push(this.#interleaveArrays(colSeparators, paddedCells).join(" "));
     }
-    return [this.#formatHeader(gridModel), ...content, "", this.#formatHelpMessage()].join("\n");
+    const gridContents = this.#interleaveArrays(rowSeparators, rowContents);
+
+    return [this.#formatHeader(gridModel), ...gridContents, "", this.#formatHelp()].join("\n");
   }
 
   static formatCell(gridModel, rowIndex, colIndex) {
@@ -38,7 +35,7 @@ export default class Formatter {
     return ANSI_BASIC_COLOR.FORE_CYAN + headerMessage + ANSI_BASIC_COLOR.RESET;
   }
 
-  static #formatHelpMessage() {
+  static #formatHelp() {
     return [
       "The following keys are available.",
       "  0-9   : Input numerical values.",
@@ -51,31 +48,24 @@ export default class Formatter {
   }
 
   static #formatResultGrid(gridModel) {
-    const rowSeparator = this.#rowSeparator(gridModel);
-    const colSeparator = "|";
+    const colSeparators = Array(gridModel.grid.length + 1).fill("|");
+    const rowSeparators = Array(gridModel.grid.length + 1).fill(this.#rowSeparator(gridModel));
+    const rowContents = [];
 
     let rowIndex = 0;
-    const content = [rowSeparator];
-    for (const row of gridModel.grid) {
-      const rowContent = [colSeparator];
-      let colIndex = 0;
-      for (const num of row) {
-        let cellContent = this.#padCellContent(num, gridModel);
+    for (const numbers of gridModel.grid) {
+      const paddedCells = numbers.map((num) => this.#padCellContent(num, gridModel.maxDigits + 1));
+      const coloredCells = paddedCells.map((cell, colIndex) => {
         const isMistake = gridModel.mistakes.some(
           (mistake) => mistake.rowIndex === rowIndex && mistake.colIndex === colIndex,
         );
-        if (isMistake) {
-          cellContent = ANSI_BASIC_COLOR.BACK_RED + cellContent + ANSI_BASIC_COLOR.RESET;
-        }
-        rowContent.push(cellContent);
-        rowContent.push(colSeparator);
-        colIndex++;
-      }
-      content.push(rowContent.join(" "));
-      content.push(rowSeparator);
+        return isMistake ? ANSI_BASIC_COLOR.BACK_RED + cell + ANSI_BASIC_COLOR.RESET : cell;
+      });
+      rowContents.push(this.#interleaveArrays(colSeparators, coloredCells).join(" "));
       rowIndex++;
     }
-    return content.join("\n");
+
+    return this.#interleaveArrays(rowSeparators, rowContents).join("\n");
   }
 
   static #formatResultMessage(gridModel) {
@@ -87,14 +77,22 @@ export default class Formatter {
     ].join("\n");
   }
 
-  static #padCellContent(num, gridModel) {
-    return num === null
-      ? " ".repeat(gridModel.maxDigits + 1)
-      : num.toString().padStart(gridModel.maxDigits + 1, " ");
+  static #padCellContent(num, digits) {
+    return num === null ? " ".repeat(digits) : num.toString().padStart(digits, " ");
   }
 
   static #rowSeparator(gridModel) {
     const repeatCount = gridModel.maxDigits === 1 ? CELL_WIDTH.ONE_DIGIT : CELL_WIDTH.TWO_DIGITS;
     return "-".repeat(repeatCount * (gridModel.gridWidth + 1) + 1);
+  }
+
+  static #interleaveArrays(primaryArray, secondaryArray) {
+    const maxLength = Math.max(primaryArray.length, secondaryArray.length);
+    const result = [];
+    for (let i = 0; i < maxLength; i++) {
+      if (i < primaryArray.length) result.push(primaryArray[i]);
+      if (i < secondaryArray.length) result.push(secondaryArray[i]);
+    }
+    return result;
   }
 }
