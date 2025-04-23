@@ -23,13 +23,11 @@ export default class Formatter {
     const rowSeparators = Array(gridModel.grid.length + 1).fill(this.#rowSeparator(gridModel));
     const rowContents = [];
 
-    let rowIndex = 0;
-    for (const rowNumbers of gridModel.grid) {
+    gridModel.grid.forEach((rowNumbers, rowIndex) => {
       const paddedCells = this.#paddedCells(rowNumbers, gridModel.maxDigits + 1);
       const cells = isResult ? this.#coloredCells(paddedCells, rowIndex, gridModel) : paddedCells;
       rowContents.push(this.#interleaveArrays(colSeparators, cells).join(" "));
-      rowIndex++;
-    }
+    });
 
     return this.#interleaveArrays(rowSeparators, rowContents).join("\n");
   }
