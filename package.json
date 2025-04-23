@@ -1,14 +1,17 @@
 {
   "scripts": {
     "lint": "prettier --check . && eslint .",
-    "lint:fix": "prettier --write . && eslint --fix ."
+    "lint:fix": "prettier --write . && eslint --fix .",
+    "test": "vitest"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
+    "@vitest/eslint-plugin": "^1.1.43",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.2",
     "globals": "^16.0.0",
-    "prettier": "3.5.3"
+    "prettier": "3.5.3",
+    "vitest": "^3.1.2"
   },
   "type": "module",
   "dependencies": {
