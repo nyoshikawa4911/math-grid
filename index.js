@@ -18,12 +18,12 @@ const checkTerminalSize = () => {
 };
 
 const warningMessage = (terminalHeight, terminalWidth) => {
-  return (
-    "The terminal's width and height are insufficient. \n" +
-    "Please enlarge the terminal and run again.\n" +
-    `The required width and height are ${REQUIRED_TERMINAL_SIZE.WIDTH} and ${REQUIRED_TERMINAL_SIZE.HEIGHT}, respectively.\n` +
-    `(Current width:${terminalWidth}, Current height:${terminalHeight})`
-  );
+  return [
+    "The terminal's width and height are insufficient.",
+    "Please enlarge the terminal and run again.",
+    `The required width and height are ${REQUIRED_TERMINAL_SIZE.WIDTH} and ${REQUIRED_TERMINAL_SIZE.HEIGHT}, respectively.`,
+    `(Current width:${terminalWidth}, Current height:${terminalHeight})`,
+  ].join("\n");
 };
 
 const menuQuestions = [

@@ -5,6 +5,7 @@ export default class Formatter {
     const contents = [];
 
     contents.push(this.#formatHeader(gridModel));
+    contents.push("");
     contents.push(this.#formatGrid(gridModel, isResult));
     contents.push("");
     contents.push(isResult ? this.#formatResult(gridModel) : this.#formatHelp());
@@ -46,7 +47,7 @@ export default class Formatter {
   }
 
   static #formatHeader(gridModel) {
-    const headerMessage = `----- Math Grid (${gridModel.gridWidth}x${gridModel.gridWidth}) - ${gridModel.maxDigits}-Digit Numbers -----\n`;
+    const headerMessage = `----- Math Grid (${gridModel.gridWidth}x${gridModel.gridWidth}) - ${gridModel.maxDigits}-Digit Numbers -----`;
     return ANSI_BASIC_COLOR.FORE_CYAN + headerMessage + ANSI_BASIC_COLOR.RESET;
   }
 
