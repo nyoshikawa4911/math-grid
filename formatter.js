@@ -64,9 +64,9 @@ export default class Formatter {
   }
 
   static #formatResult(gridModel) {
-    const messageForPerfect = gridModel.score === gridModel.perfectScore ? "(Perfect!!)" : "";
+    const messageForPerfect = gridModel.score === gridModel.perfectScore ? " (Perfect!!)" : "";
     return [
-      `Correct : ${gridModel.score} / ${gridModel.perfectScore} ${messageForPerfect}`,
+      `Correct : ${gridModel.score} / ${gridModel.perfectScore}${messageForPerfect}`,
       "",
       "Press any key to return the menu.",
     ].join("\n");
