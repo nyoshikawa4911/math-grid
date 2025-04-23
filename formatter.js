@@ -1,18 +1,15 @@
 import { CELL_WIDTH, ANSI_BASIC_COLOR } from "./constants.js";
 
 export default class Formatter {
-  static format(gridModel) {
-    const colSeparators = Array(gridModel.grid.length + 1).fill("|");
-    const rowSeparators = Array(gridModel.grid.length + 1).fill(this.#rowSeparator(gridModel));
-    const rowContents = [];
+  static format(gridModel, isResult) {
+    const contents = [];
 
-    for (const numbers of gridModel.grid) {
-      const paddedCells = numbers.map((num) => this.#padCellContent(num, gridModel.maxDigits + 1));
-      rowContents.push(this.#interleaveArrays(colSeparators, paddedCells).join(" "));
-    }
-    const gridContents = this.#interleaveArrays(rowSeparators, rowContents);
+    contents.push(this.#formatHeader(gridModel));
+    contents.push(this.#formatGrid(gridModel, isResult));
+    contents.push("");
+    contents.push(isResult ? this.#formatResult(gridModel) : this.#formatHelp());
 
-    return [this.#formatHeader(gridModel), ...gridContents, "", this.#formatHelp()].join("\n");
+    return contents.join("\n");
   }
 
   static formatCell(gridModel, rowIndex, colIndex) {
@@ -21,13 +18,33 @@ export default class Formatter {
     return numString.padStart(gridModel.maxDigits + 1, " ");
   }
 
-  static formatResult(gridModel) {
-    return [
-      this.#formatHeader(gridModel),
-      this.#formatResultGrid(gridModel),
-      "",
-      this.#formatResultMessage(gridModel),
-    ].join("\n");
+  static #formatGrid(gridModel, isResult) {
+    const colSeparators = Array(gridModel.grid.length + 1).fill("|");
+    const rowSeparators = Array(gridModel.grid.length + 1).fill(this.#rowSeparator(gridModel));
+    const rowContents = [];
+
+    let rowIndex = 0;
+    for (const rowNumbers of gridModel.grid) {
+      const paddedCells = this.#paddedCells(rowNumbers, gridModel.maxDigits + 1);
+      const cells = isResult ? this.#coloredCells(paddedCells, rowIndex, gridModel) : paddedCells;
+      rowContents.push(this.#interleaveArrays(colSeparators, cells).join(" "));
+      rowIndex++;
+    }
+
+    return this.#interleaveArrays(rowSeparators, rowContents).join("\n");
+  }
+
+  static #paddedCells(numbers, digits) {
+    return numbers.map((num) => this.#padCellContent(num, digits));
+  }
+
+  static #coloredCells(paddedCells, rowIndex, gridModel) {
+    return paddedCells.map((cell, colIndex) => {
+      const isMistake = gridModel.mistakes.some(
+        (mistake) => mistake.rowIndex === rowIndex && mistake.colIndex === colIndex,
+      );
+      return isMistake ? ANSI_BASIC_COLOR.BACK_RED + cell + ANSI_BASIC_COLOR.RESET : cell;
+    });
   }
 
   static #formatHeader(gridModel) {
@@ -47,28 +64,7 @@ export default class Formatter {
     ].join("\n");
   }
 
-  static #formatResultGrid(gridModel) {
-    const colSeparators = Array(gridModel.grid.length + 1).fill("|");
-    const rowSeparators = Array(gridModel.grid.length + 1).fill(this.#rowSeparator(gridModel));
-    const rowContents = [];
-
-    let rowIndex = 0;
-    for (const numbers of gridModel.grid) {
-      const paddedCells = numbers.map((num) => this.#padCellContent(num, gridModel.maxDigits + 1));
-      const coloredCells = paddedCells.map((cell, colIndex) => {
-        const isMistake = gridModel.mistakes.some(
-          (mistake) => mistake.rowIndex === rowIndex && mistake.colIndex === colIndex,
-        );
-        return isMistake ? ANSI_BASIC_COLOR.BACK_RED + cell + ANSI_BASIC_COLOR.RESET : cell;
-      });
-      rowContents.push(this.#interleaveArrays(colSeparators, coloredCells).join(" "));
-      rowIndex++;
-    }
-
-    return this.#interleaveArrays(rowSeparators, rowContents).join("\n");
-  }
-
-  static #formatResultMessage(gridModel) {
+  static #formatResult(gridModel) {
     const messageForPerfect = gridModel.score === gridModel.perfectScore ? "(Perfect!!)" : "";
     return [
       `Correct : ${gridModel.score} / ${gridModel.perfectScore} ${messageForPerfect}`,
