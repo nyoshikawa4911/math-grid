@@ -54,11 +54,12 @@ export default class Formatter {
     const rowSeparator = this.#rowSeparator(gridModel);
     const colSeparator = "|";
 
+    let rowIndex = 0;
     const content = [rowSeparator];
-    for (let rowIndex = 0; rowIndex < gridModel.gridWidth + 1; rowIndex++) {
+    for (const row of gridModel.grid) {
       const rowContent = [colSeparator];
-      for (let colIndex = 0; colIndex < gridModel.gridWidth + 1; colIndex++) {
-        const num = gridModel.getValue(rowIndex, colIndex);
+      let colIndex = 0;
+      for (const num of row) {
         let cellContent = this.#padCellContent(num, gridModel);
         const isMistake = gridModel.mistakes.some(
           (mistake) => mistake.rowIndex === rowIndex && mistake.colIndex === colIndex,
@@ -68,11 +69,12 @@ export default class Formatter {
         }
         rowContent.push(cellContent);
         rowContent.push(colSeparator);
+        colIndex++;
       }
       content.push(rowContent.join(" "));
       content.push(rowSeparator);
+      rowIndex++;
     }
-
     return content.join("\n");
   }
 
